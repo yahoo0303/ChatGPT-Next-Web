@@ -1,0 +1,217 @@
+.wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  color: #888;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.section {
+  background: var(--white, #fff);
+  border: 1px solid var(--border-color, #e5e5e5);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  color: inherit;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #888;
+}
+
+.btn,
+.btnPrimary,
+.btnWarn,
+.btnDanger {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn:hover { background: rgba(0,0,0,0.04); }
+
+.btnPrimary {
+  color: #fff;
+  background: #0070f3;
+  border-color: #0070f3;
+}
+.btnPrimary:hover { background: #016be0; }
+
+.btnWarn {
+  color: #8a5a00;
+  background: #fff7e6;
+  border-color: #ffe58f;
+}
+
+.btnDanger {
+  color: #a8071a;
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+
+.btnSmall {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  cursor: pointer;
+}
+
+.listBox {
+  margin-top: 12px;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.chip:hover { background: rgba(0,0,0,0.04); }
+
+.prizeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.prizeBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color, #e5e5e5);
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.prizeBtn:hover { background: rgba(0,0,0,0.04); }
+
+.prizeName {
+  font-weight: 600;
+}
+.prizeQty {
+  opacity: 0.7;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stats {
+  margin-top: 8px;
+  color: #666;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.warn { color: #d46b08; }
+
+.resultsBox { margin-top: 12px; }
+
+.resultList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.resultItem {
+  border: 1px solid var(--border-color, #e5e5e5);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.resultPrize {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.resultWinners {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.winnerChip {
+  background: #f0f5ff;
+  border: 1px solid #adc6ff;
+  color: #1d39c4;
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.noWinner { color: #999; }
+
+.resultActions { display: flex; gap: 8px; }
+
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+}
