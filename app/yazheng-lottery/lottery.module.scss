@@ -44,6 +44,7 @@
   border: 1px solid var(--border-color, #e5e5e5);
   background: transparent;
   color: inherit;
+  user-select: text;
 }
 
 .actions {
