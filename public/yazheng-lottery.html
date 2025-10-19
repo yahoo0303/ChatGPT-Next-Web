@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>雅正口腔年会抽奖（纯HTML版）</title>
+  <style>
+    :root {
+      --border: #e5e5e5;
+      --text: #222;
+      --muted: #888;
+      --bg: #fafafa;
+      --card: #fff;
+      --primary: #0070f3;
+      --warn-bg: #fff7e6;
+      --warn-border: #ffe58f;
+      --warn-text: #8a5a00;
+      --danger-bg: #fff1f0;
+      --danger-border: #ffa39e;
+      --danger-text: #a8071a;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { margin: 0 0 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; }
+
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .grid { display: grid; grid-template-columns: 1fr 220px; gap: 12px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+    textarea {
+      width: 100%; min-height: 120px; resize: vertical; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: transparent; color: inherit; user-select: text;
+    }
+
+    .actions { display: flex; flex-direction: column; gap: 8px; }
+    .hint { font-size: 12px; color: var(--muted); }
+
+    button { cursor: pointer; }
+    .btn, .btnPrimary, .btnWarn, .btnDanger {
+      padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent;
+    }
+    .btn:hover { background: rgba(0,0,0,0.04); }
+    .btn:disabled, .btnPrimary:disabled, .btnWarn:disabled, .btnDanger:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btnPrimary { color: #fff; background: var(--primary); border-color: var(--primary); }
+    .btnPrimary:hover { filter: brightness(0.95); }
+
+    .btnWarn { color: var(--warn-text); background: var(--warn-bg); border-color: var(--warn-border); }
+    .btnDanger { color: var(--danger-text); background: var(--danger-bg); border-color: var(--danger-border); }
+
+    .listBox { margin-top: 12px; }
+    .listHeader { display: flex; align-items: center; justify-content: space-between; font-weight: 600; margin-bottom: 10px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid var(--border); background: transparent; border-radius: 999px; padding: 6px 10px; cursor: pointer; }
+    .chip:hover { background: rgba(0,0,0,0.04); }
+
+    .prizeList { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    .prizeBtn { width: 100%; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); background: transparent; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+    .prizeBtn:hover { background: rgba(0,0,0,0.04); }
+    .prizeName { font-weight: 600; }
+    .prizeQty { opacity: 0.7; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; }
+    .stats { margin-top: 8px; color: #666; display: flex; flex-wrap: wrap; gap: 12px; }
+    .warn { color: #d46b08; }
+
+    .resultsBox { margin-top: 12px; }
+    .resultList { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .resultItem { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+    .resultPrize { font-weight: 700; margin-bottom: 6px; }
+    .resultWinners { display: flex; flex-wrap: wrap; gap: 8px; }
+    .winnerChip { background: #f0f5ff; border: 1px solid #adc6ff; color: #1d39c4; border-radius: 999px; padding: 4px 8px; }
+    .noWinner { color: #999; }
+
+    footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: 12px; }
+
+    .btnSmall { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; cursor: pointer; }
+    .resultActions { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>雅正口腔年会抽奖</h1>
+      <div class="subtitle">纯HTML单文件版｜支持批量导入参与者、奖品及数量，顺序抽取并避免重复中奖</div>
+    </header>
+
+    <section class="section">
+      <h2>1. 批量添加参与人员</h2>
+      <div class="grid">
+        <textarea id="participants-input" placeholder="每行一个姓名，如：&#10;张三&#10;李四&#10;王五"></textarea>
+        <div class="actions">
+          <button id="participants-append" class="btnPrimary">追加</button>
+          <button id="participants-replace" class="btn">覆盖</button>
+          <div class="hint" id="participants-hint">当前共 0 人，未中奖 0 人</div>
+        </div>
+      </div>
+      <div id="participants-list" class="listBox" style="display:none;">
+        <div class="listHeader">
+          <span>已添加的人员（点击姓名可删除）</span>
+          <span id="participants-count">共 0 人</span>
+        </div>
+        <div id="participants-chips" class="chips"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>2. 批量添加奖品与数量</h2>
+      <div class="grid">
+        <textarea id="prizes-input" placeholder="支持格式：&#10;电动牙刷*3&#10;小米手环 x 5&#10;京东卡,10&#10;保温杯 2&#10;电影票：20"></textarea>
+        <div class="actions">
+          <button id="prizes-append" class="btnPrimary">追加</button>
+          <button id="prizes-replace" class="btn">覆盖</button>
+          <div class="hint" id="prizes-hint">当前共 0 个奖项，总计 0 份</div>
+        </div>
+      </div>
+      <div id="prizes-list" class="listBox" style="display:none;">
+        <div class="listHeader">
+          <span>奖品列表（点击可删除该奖项）</span>
+          <span id="prizes-count">共 0 项</span>
+        </div>
+        <ul id="prizes-ul" class="prizeList"></ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>3. 开始抽奖</h2>
+      <div class="controls">
+        <button id="draw-one" class="btnPrimary" disabled>抽取下一个奖项</button>
+        <button id="draw-all" class="btn" disabled>全部抽完</button>
+        <button id="undo" class="btnWarn" disabled>撤销上一次</button>
+        <button id="reset" class="btnDanger" disabled>清空结果</button>
+      </div>
+      <div class="stats">
+        <span id="stat-drawn">已抽出 0 人</span>
+        <span id="stat-remaining">剩余 0 人</span>
+        <span id="stat-note" class="warn" style="display:none;">注意：奖品总数多于参与人数，可能会有奖项无人可抽</span>
+      </div>
+
+      <div id="results-box" class="resultsBox" style="display:none;">
+        <div class="listHeader">
+          <span>抽奖结果</span>
+          <div class="resultActions">
+            <button id="export-csv" class="btnSmall">导出 CSV</button>
+          </div>
+        </div>
+        <ul id="results-ul" class="resultList"></ul>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> 雅正口腔年会抽奖 — 本页面在浏览器本地运行，不会上传数据。
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      const STORAGE_KEYS = {
+        participants: 'yazheng-lottery-participants',
+        prizes: 'yazheng-lottery-prizes',
+        results: 'yazheng-lottery-results'
+      };
+
+      const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+      function parseParticipants(input) {
+        return Array.from(new Set(
+          input.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+        ));
+      }
+
+      function parsePrizes(input) {
+        const lines = input.split(/\r?\n/);
+        const result = [];
+        for (const raw of lines) {
+          const line = raw.trim();
+          if (!line) continue;
+          let name = line;
+          let qty = 1;
+          let m = line.match(/^(.*?)[\s]*[xX\*：:,，][\s]*(\d+)$/);
+          if (m && m[1]) {
+            name = m[1].trim();
+            qty = Math.max(1, parseInt(m[2] || '1', 10));
+          } else {
+            const parts = line.split(/\s+/);
+            const maybeQty = parts[parts.length - 1];
+            if (/^\d+$/.test(maybeQty)) {
+              qty = Math.max(1, parseInt(maybeQty, 10));
+              name = parts.slice(0, -1).join(' ').trim();
+            }
+          }
+          if (!name) continue;
+          result.push({ id: uid(), name, qty });
+        }
+        return result;
+      }
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function downloadCSV(filename, rows) {
+        const process = (row) => row.map((v) => {
+          const s = String(v).replace(/\"/g, '""');
+          return s.search(/[",\n]/) >= 0 ? '"' + s + '"' : s;
+        }).join(',');
+        const csv = ['\uFEFF' + rows.map(process).join('\n')];
+        const blob = new Blob(csv, { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      // state
+      let participants = [];
+      let prizes = [];
+      let results = [];
+
+      // elements
+      const el = {
+        year: document.getElementById('year'),
+        // participants
+        pInput: document.getElementById('participants-input'),
+        pAppend: document.getElementById('participants-append'),
+        pReplace: document.getElementById('participants-replace'),
+        pHint: document.getElementById('participants-hint'),
+        pListBox: document.getElementById('participants-list'),
+        pCount: document.getElementById('participants-count'),
+        pChips: document.getElementById('participants-chips'),
+        // prizes
+        zInput: document.getElementById('prizes-input'),
+        zAppend: document.getElementById('prizes-append'),
+        zReplace: document.getElementById('prizes-replace'),
+        zHint: document.getElementById('prizes-hint'),
+        zListBox: document.getElementById('prizes-list'),
+        zCount: document.getElementById('prizes-count'),
+        zUl: document.getElementById('prizes-ul'),
+        // controls
+        drawOne: document.getElementById('draw-one'),
+        drawAll: document.getElementById('draw-all'),
+        undo: document.getElementById('undo'),
+        reset: document.getElementById('reset'),
+        // stats
+        sDrawn: document.getElementById('stat-drawn'),
+        sRemain: document.getElementById('stat-remaining'),
+        sNote: document.getElementById('stat-note'),
+        // results
+        rBox: document.getElementById('results-box'),
+        rUl: document.getElementById('results-ul'),
+        exportCsv: document.getElementById('export-csv'),
+      };
+
+      el.year.textContent = new Date().getFullYear();
+
+      function save() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.participants, JSON.stringify(participants));
+          localStorage.setItem(STORAGE_KEYS.prizes, JSON.stringify(prizes));
+          localStorage.setItem(STORAGE_KEYS.results, JSON.stringify(results));
+        } catch (e) { /* ignore */ }
+      }
+
+      function load() {
+        try {
+          const ps = localStorage.getItem(STORAGE_KEYS.participants);
+          const zs = localStorage.getItem(STORAGE_KEYS.prizes);
+          const rs = localStorage.getItem(STORAGE_KEYS.results);
+          if (ps) participants = JSON.parse(ps) || [];
+          if (zs) prizes = JSON.parse(zs) || [];
+          if (rs) results = JSON.parse(rs) || [];
+        } catch (e) {
+          participants = []; prizes = []; results = [];
+        }
+      }
+
+      function render() {
+        // winners set & remaining
+        const winners = new Set(results.flatMap(r => r.winners));
+        const remaining = participants.filter(p => !winners.has(p));
+        const totalPrizeCount = prizes.reduce((s, p) => s + (p.qty || 0), 0);
+        const usedPrizeIds = new Set(results.map(r => r.prizeId));
+        const pendingPrizes = prizes.filter(p => !usedPrizeIds.has(p.id));
+        const drawnCount = results.reduce((s, r) => s + r.winners.length, 0);
+
+        // update hints
+        el.pHint.textContent = `当前共 ${participants.length} 人，未中奖 ${remaining.length} 人`;
+        el.pListBox.style.display = participants.length ? '' : 'none';
+        el.pCount.textContent = `共 ${participants.length} 人`;
+
+        el.zHint.textContent = `当前共 ${prizes.length} 个奖项，总计 ${totalPrizeCount} 份`;
+        el.zListBox.style.display = prizes.length ? '' : 'none';
+        el.zCount.textContent = `共 ${prizes.length} 项`;
+
+        el.sDrawn.textContent = `已抽出 ${drawnCount} 人`;
+        el.sRemain.textContent = `剩余 ${remaining.length} 人`;
+        el.sNote.style.display = totalPrizeCount > participants.length ? '' : 'none';
+
+        // update buttons
+        const canDraw = pendingPrizes.length > 0 && remaining.length > 0;
+        el.drawOne.disabled = !canDraw;
+        el.drawAll.disabled = !canDraw;
+        el.undo.disabled = results.length === 0;
+        el.reset.disabled = results.length === 0;
+
+        // render participants chips
+        el.pChips.innerHTML = '';
+        participants.forEach((name) => {
+          const btn = document.createElement('button');
+          btn.className = 'chip';
+          btn.textContent = name;
+          btn.title = '点击删除';
+          btn.dataset.name = name;
+          btn.addEventListener('click', () => {
+            participants = participants.filter(p => p !== name);
+            // 删除时如果已中奖，则不回退结果，仅移除后续参与资格
+            save();
+            render();
+          });
+          el.pChips.appendChild(btn);
+        });
+
+        // render prizes
+        el.zUl.innerHTML = '';
+        prizes.forEach((p) => {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.className = 'prizeBtn';
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'prizeName';
+          nameSpan.textContent = p.name;
+          const qtySpan = document.createElement('span');
+          qtySpan.className = 'prizeQty';
+          qtySpan.textContent = '× ' + p.qty;
+          btn.appendChild(nameSpan); btn.appendChild(qtySpan);
+          btn.addEventListener('click', () => {
+            prizes = prizes.filter(z => z.id !== p.id);
+            // 同步删除对应结果
+            results = results.filter(r => r.prizeId !== p.id);
+            save();
+            render();
+          });
+          li.appendChild(btn);
+          el.zUl.appendChild(li);
+        });
+
+        // render results
+        el.rUl.innerHTML = '';
+        el.rBox.style.display = results.length ? '' : 'none';
+        results.forEach((r) => {
+          const li = document.createElement('li');
+          li.className = 'resultItem';
+          const prizeDiv = document.createElement('div');
+          prizeDiv.className = 'resultPrize';
+          prizeDiv.textContent = r.prizeName;
+          const winnersDiv = document.createElement('div');
+          winnersDiv.className = 'resultWinners';
+          if (!r.winners || r.winners.length === 0) {
+            const span = document.createElement('span');
+            span.className = 'noWinner';
+            span.textContent = '（无人可抽）';
+            winnersDiv.appendChild(span);
+          } else {
+            r.winners.forEach((w) => {
+              const chip = document.createElement('span');
+              chip.className = 'winnerChip';
+              chip.textContent = w;
+              winnersDiv.appendChild(chip);
+            });
+          }
+          li.appendChild(prizeDiv);
+          li.appendChild(winnersDiv);
+          el.rUl.appendChild(li);
+        });
+      }
+
+      function addParticipantsAppend(input) {
+        const parsed = parseParticipants(input);
+        const merged = Array.from(new Set([...(participants || []), ...parsed]));
+        participants = merged;
+        save();
+        render();
+      }
+
+      function addParticipantsReplace(input) {
+        const parsed = parseParticipants(input);
+        participants = parsed;
+        save();
+        render();
+      }
+
+      function addPrizesAppend(input) {
+        const parsed = parsePrizes(input);
+        prizes = [...(prizes || []), ...parsed];
+        save();
+        render();
+      }
+
+      function addPrizesReplace(input) {
+        const parsed = parsePrizes(input);
+        prizes = parsed;
+        save();
+        render();
+      }
+
+      function drawOne() {
+        const winners = new Set(results.flatMap(r => r.winners));
+        const remaining = participants.filter(p => !winners.has(p));
+        const usedPrizeIds = new Set(results.map(r => r.prizeId));
+        const pending = prizes.filter(p => !usedPrizeIds.has(p.id));
+        if (pending.length === 0) return;
+        const prize = pending[0];
+        if (remaining.length === 0) return;
+        const count = Math.min(prize.qty, remaining.length);
+        const chosen = shuffle(remaining).slice(0, count);
+        results = [...results, { prizeId: prize.id, prizeName: prize.name, winners: chosen, ts: Date.now() }];
+        save();
+        render();
+      }
+
+      function drawAll() {
+        let winners = new Set(results.flatMap(r => r.winners));
+        let remaining = participants.filter(p => !winners.has(p));
+        const usedPrizeIds = new Set(results.map(r => r.prizeId));
+        const pending = prizes.filter(p => !usedPrizeIds.has(p.id));
+        const newResults = [];
+        for (const prize of pending) {
+          if (remaining.length === 0) break;
+          const count = Math.min(prize.qty, remaining.length);
+          remaining = shuffle(remaining);
+          const chosen = remaining.slice(0, count);
+          remaining = remaining.slice(count);
+          chosen.forEach(c => winners.add(c));
+          newResults.push({ prizeId: prize.id, prizeName: prize.name, winners: chosen, ts: Date.now() });
+        }
+        if (newResults.length) {
+          results = [...results, ...newResults];
+          save();
+          render();
+        }
+      }
+
+      function undoLast() {
+        if (!results.length) return;
+        results = results.slice(0, -1);
+        save();
+        render();
+      }
+
+      function resetAll() {
+        if (!confirm('确定要清空抽奖结果吗？')) return;
+        results = [];
+        save();
+        render();
+      }
+
+      function exportResults() {
+        const rows = [["奖品", "中奖人"]];
+        results.forEach(r => {
+          if (!r.winners || r.winners.length === 0) {
+            rows.push([r.prizeName, '-']);
+          } else {
+            r.winners.forEach(w => rows.push([r.prizeName, w]));
+          }
+        });
+        downloadCSV('雅正口腔抽奖结果.csv', rows);
+      }
+
+      // bind events
+      el.pAppend.addEventListener('click', () => addParticipantsAppend(el.pInput.value));
+      el.pReplace.addEventListener('click', () => addParticipantsReplace(el.pInput.value));
+
+      el.zAppend.addEventListener('click', () => addPrizesAppend(el.zInput.value));
+      el.zReplace.addEventListener('click', () => addPrizesReplace(el.zInput.value));
+
+      el.drawOne.addEventListener('click', drawOne);
+      el.drawAll.addEventListener('click', drawAll);
+      el.undo.addEventListener('click', undoLast);
+      el.reset.addEventListener('click', resetAll);
+
+      el.exportCsv.addEventListener('click', exportResults);
+
+      // init
+      load();
+      render();
+    })();
+  </script>
+</body>
+</html>
