@@ -146,6 +146,8 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
+> `m-reader` 容器镜像的部署文档将稍后补充，当前可先参考仓库根目录的 `docker-compose.example.yml` 与 `README_部署说明.md`，了解宝塔 Docker 场景所需的端口映射和环境变量占位。
+
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
 
 ### 本地部署

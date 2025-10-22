@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  m-reader:
+    build:
+      context: .
+      dockerfile: ./apps/m-reader/Dockerfile
+    image: m-reader:local
+    restart: unless-stopped
+    environment:
+      APP_PORT: ${APP_PORT:-1314}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-20251022}
+      DB_USER: ${DB_USER:-20251022}
+      DB_PASSWORD: ${DB_PASSWORD:-20251022}
+    ports:
+      - "${APP_PORT:-1314}:1314" # 宝塔 Docker 需要显式映射主机端口
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-20251022}
+      POSTGRES_USER: ${DB_USER:-20251022}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-20251022}
+    ports:
+      - "${DB_PORT:-5432}:5432"

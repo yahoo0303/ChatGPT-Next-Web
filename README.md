@@ -231,6 +231,8 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
+> Deployment notes for the upcoming `m-reader` container image (including 宝塔 Docker usage) will be published soon. A scaffolded example is already available in `docker-compose.example.yml`, and placeholders are tracked in `README_部署说明.md`.
+
 ### Shell
 
 ```shell
